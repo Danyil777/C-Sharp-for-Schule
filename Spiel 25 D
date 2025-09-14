@@ -1,54 +1,64 @@
 using System;
-using System.Runtime.CompilerServices;
 
-namespace lessons
+namespace Lessons
 {
     class Program
     {
         static void Main(string[] args)
         {
-
-            int Planke = 25;
-            int player = 1;
+            int planke = 25;
+            int player = 2; // 2 - бот ходит первым
             int take;
 
-            Console.WriteLine("Sie haben 25 Bretter, das Spiel hat begonnen");
+            Console.WriteLine("Sie haben 25 Bretter, das Spiel hat begonnen!");
             Console.WriteLine("Wählen Sie zwischen 1 und 3");
 
-            while (Planke > 0) //  если делать через true то код не идет почему то дальше (нужно вкладывать дядю)
+            while (planke > 0)
             {
+                Console.WriteLine($"\nEs gibt noch {planke} Bretter.");
 
-                while (true)
+                if (player == 1) // Человек
                 {
-                    if (int.TryParse(Console.ReadLine(), out take) && take >= 1 && take <= 3)
+                    while (true)
                     {
-                        break;
+                        Console.Write($"Spieler {player}, wie viele nimmst du (1-3)? ");
+
+                        if (int.TryParse(Console.ReadLine(), out take) && take >= 1 && take <= 3 && take <= planke)
+                        {
+                             break;
+                        }
+                            Console.WriteLine("Ungültige Eingabe! Bitte 1, 2 oder 3 eingeben.");
                     }
-                    Console.WriteLine("ungültige Eingabe");
                 }
-                
-                Planke -= take;
-
-                if (Planke == 0)
+                else // Бот
                 {
-                    Console.WriteLine($"Du {player} hast verloren, LOX.");
-
+                    take = Winst(planke); // Бот всегда выигрывает
+                    Console.WriteLine($"Spieler {player} nimmt {take} Bretter.");
                 }
+
+                planke = planke - take;
+
+                if (planke == 0)
+                {
+                    Console.WriteLine($"\nSpieler {player} hat das letzte Brett genommen und VERLOREN!");
+                    break;
+                }
+
+                player = (player == 1) ? 2 : 1;
             }
 
-
-            if (player == 1)
-            {
-                player = 2;
-            }
-            else
-            {
-                player = 1;
-            }
-
-
-
+            Console.WriteLine("\nSpiel beendet.");
         }
-        
+       
+
+       // Делаем стратегию выгрыша
+        static int Winst(int rest)
+        {
+            int skok;   // сколько взять
+            skok = (rest - 1) % 4; // типо тут мы от остатка отнимем 1 и после, мы умножем 4 на максимум и разница будет нашим ходом
+
+            if (skok == 0) skok = 1; // если число делиться на 4 без остатка то берем 1
+            return skok;
+        }
     }
 }
