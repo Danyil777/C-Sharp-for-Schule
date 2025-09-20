@@ -1,0 +1,116 @@
+using System;
+
+namespace ZinsrechnerApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Title = "  Zinsrechner - Bank Kalkulator  ";
+            Console.ForegroundColor = ConsoleColor.Cyan;
+
+            Console.WriteLine("============================================");
+            Console.WriteLine("          Willkommen zum Zinsrechner       ");
+            Console.WriteLine("============================================\n");
+            Console.ResetColor();
+
+            Console.WriteLine("Bitte wählen Sie eine Operation:\n");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(" [1] Endsumme (B) berechnen");
+            Console.WriteLine(" [2] Zinssatz (r) berechnen");
+            Console.WriteLine(" [3] Laufzeit (t) berechnen");
+            Console.ResetColor();
+
+            Console.Write("\nIhre Auswahl: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int wahl))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("❌ Ungültige Eingabe!");
+                Console.ResetColor();
+                return;
+            }
+
+            double K, r, t, B;
+            int n;
+
+            Console.Clear();  // Чтоб все прошле ушло
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("============================================");
+            Console.WriteLine("              Berechnungsmodus            ");
+            Console.WriteLine("============================================\n");
+            Console.ResetColor();
+
+            switch (wahl) // тут все в переменной текст и за его вывод отвечает.функция 
+            {
+                case 1: 
+                    K = EingabeDouble("Startkapital (K): ");
+                    r = EingabeDouble("Zinssatz % (r): ") / 100;
+                    n = EingabeInt("Zinsperioden pro Jahr (n): ");
+                    t = EingabeDouble("Laufzeit in Jahren (t): ");
+
+                    B = K * Math.Pow((1 + r / n), n * t);
+
+                    ErgebnisAnzeigen("Ihre Endsumme", B.ToString("F2") + " €");  // перед запятой titel а после запятой wert; О таках х.... малятаы
+                    break;
+
+                case 2: 
+                    K = EingabeDouble("Startkapital (K): ");
+                    B = EingabeDouble("Endsumme (B): ");
+                    n = EingabeInt("Zinsperioden pro Jahr (n): ");
+                    t = EingabeDouble("Laufzeit in Jahren (t): ");
+
+                    r = n * (Math.Pow(B / K, 1.0 / (n * t)) - 1);
+
+                    ErgebnisAnzeigen("Ihr Zinssatz", (r * 100).ToString("F2") + " %");
+                    break;
+
+                case 3: 
+                    K = EingabeDouble("Startkapital (K): ");
+                    B = EingabeDouble("Endsumme (B): ");
+                    r = EingabeDouble("Zinssatz % (r): ") / 100;
+                    n = EingabeInt("Zinsperioden pro Jahr (n): ");
+
+                    t = Math.Log(B / K) / (n * Math.Log(1 + r / n));
+
+                    ErgebnisAnzeigen("Benötigte Laufzeit", t.ToString("F2") + " Jahre");
+                    break;
+            }
+
+            Console.WriteLine("\nDrücken Sie eine beliebige Taste zum Beenden...");
+            Console.ReadKey();
+        }
+
+
+
+
+
+        // Я его все трогал
+        static double EingabeDouble(string text)  // для всех даблов
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(text);
+            Console.ResetColor();
+            return double.Parse(Console.ReadLine());  // тупо возвращает все что я ввел обратно в кейсы чтоб там их посчитала формула
+        }
+
+        static int EingabeInt(string text)  // для всех int-ов
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(text);
+            Console.ResetColor();
+            return int.Parse(Console.ReadLine());  // тупо возвращает все что я ввел обратно в кейсы чтоб там их посчитала формула
+        }
+
+        static void ErgebnisAnzeigen(string titel, string wert)  // void значит что мы ничего не возврацаем в отличии от верзних
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("\n--------------------------------------------");
+            Console.WriteLine($"   {titel}: {wert}");
+            Console.WriteLine("--------------------------------------------");
+            Console.ResetColor();
+        }
+    }
+}
